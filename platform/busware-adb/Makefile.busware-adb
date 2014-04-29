@@ -1,0 +1,42 @@
+# -*- mode: Makefile -*-
+
+# ATmega1284p @ 8MHz (3V)
+MCU		= atmega1284p
+
+AVR_MCU_CLOCK	= 8
+AVR_MCU_SPEED	= 8000000UL
+
+
+RAM_SIZE = 16 * 1024
+FLASH_SIZE = 128*1024
+STACK_SIZE = 1024
+
+
+#Possible watchdog timeouts depend on mcu. Default is WDTO_2S. -1 Disables the watchdog.
+WATCHDOG_CONF_TIMEOUT = -1
+
+SENSORS += sensors.c button-sensor.c
+
+CLEAN += *.busware-adb
+
+CONTIKI_TARGET_DIRS = .
+CONTIKI_CORE		= contiki-main
+CONTIKI_TARGET_MAIN	= ${CONTIKI_CORE}.o
+
+CONTIKI_TARGET_SOURCEFILES +=	contiki-main.c
+
+AVRDUDE_BAUD = 38400
+
+BUSWAREPLATFORMDIR  = $(CONTIKI)/platform/busware-cc
+
+AVRDUDE_PORT		= $(shell $(BUSWAREPLATFORMDIR)/choose_board.sh)
+AVRDUDE_PROGRAMMER 	= avr109
+AVRDUDE_OPTIONS		= -V -b $(AVRDUDE_BAUD)
+
+
+include $(BUSWAREPLATFORMDIR)/Makefile.busware-cc
+
+%.hex: %.elf
+	$(OBJCOPY) -R .eeprom -R .fuse -R .signature $^ -O ihex $@
+
+

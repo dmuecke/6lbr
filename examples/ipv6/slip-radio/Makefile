@@ -11,12 +11,15 @@ CONTIKI=../../..
 UIP_CONF_IPV6=1
 UIP_CONF_RPL=0
 
+#busware radio device
+RADIO_DEVICE=cc1101
 #linker optimizations
 SMALL=1
 
-CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\" -DSLIP_RADIO=1
+CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\" -DAUTOSTART_ENABLE -DSLIP_RADIO=1 
 PROJECT_SOURCEFILES += slip-net.c no-framer.c
 ifneq ($(RADIO_DEVICE),)
+  CFLAGS += -DRADIO_DEVICE_$(RADIO_DEVICE)=1
   PROJECT_SOURCEFILES += slip-radio-$(RADIO_DEVICE).c
 else
 ifeq ($(TARGET),sky)

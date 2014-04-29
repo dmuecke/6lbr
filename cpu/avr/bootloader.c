@@ -15,6 +15,10 @@
 #define MCUSR MCUCSR
 #endif
 
+#if defined(__AVR_AT90usb647__) || defined(__AVR_AT90usb646__) || defined (__AVR_ATmega32U4__)
+#undef RAMPZ 
+#endif 
+
 #ifndef EEPROM_MAGIC_BYTE_ADDR
 #define EEPROM_MAGIC_BYTE_ADDR   (uint8_t*)(E2END-3)
 #endif
@@ -26,7 +30,8 @@ extern void Bootloader_Jump_Check(void) ATTR_INIT_SECTION(3);
 bool
 bootloader_is_present(void)
 {
-#if defined(BOOTLOADER_START_ADDRESS)
+/* TODO: Probably can just return false when < 64K flash */
+#if defined(BOOTLOADER_START_ADDRESS) && defined(RAMPZ)
   return pgm_read_word_far(BOOTLOADER_START_ADDRESS) != 0xFFFF;
 #else
   return false;

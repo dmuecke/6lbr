@@ -1,0 +1,44 @@
+# -*- mode: Makefile -*-
+
+MCU		= atmega32u4
+
+AVR_MCU_CLOCK	= 8
+AVR_MCU_SPEED	= 8000000UL
+
+
+RAM_SIZE = 2.5 * 1024
+FLASH_SIZE = 28*1024
+STACK_SIZE = 128
+
+
+BUSWAREPLATFORMDIR  = $(CONTIKI)/platform/busware-cc
+#Possible watchdog timeouts depend on mcu. Default is WDTO_2S. -1 Disables the watchdog.
+WATCHDOG_CONF_TIMEOUT = -1
+
+SENSORS += sensors.c button-sensor.c
+
+
+CONTIKI_TARGET_DIRS +=  . $(BUSWAREPLATFORMDIR)/usb
+CONTIKI_TARGET_SOURCEFILES += usb_serial.c
+
+
+CONTIKI_CORE		= contiki-main
+
+
+CONTIKI_TARGET_SOURCEFILES +=	contiki-main.c
+
+CLEAN += *.busware-cul
+
+AVRDUDE_BAUD = 38400
+AVRDUDE_PORT = /dev/tty.usbmodem12341
+
+include $(BUSWAREPLATFORMDIR)/Makefile.busware-cc
+
+%.hex: %.elf
+	$(OBJCOPY) -R .eeprom -R .fuse -R .signature $^ -O ihex $@
+
+%.u: %.hex
+	dfu-programmer $(MCU) erase
+	dfu-programmer $(MCU) flash --suppress-validation $<
+	dfu-programmer $(MCU) reset
+

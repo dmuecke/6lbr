@@ -138,8 +138,8 @@ ifndef NOAVRSIZE
 	avr-size -C --mcu=$(MCU) $@
 endif
 
-%.hex: %.out
-	$(OBJCOPY) $^ -j .text -j .data -O ihex $@
+#%.hex: %.out
+#	$(OBJCOPY) $^ -j .text -j .data -O ihex $@
 
 %.ihex: %.out
 	$(OBJCOPY) $^ -O ihex $@
@@ -156,8 +156,8 @@ ifdef SYMBOLS
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBC) symbols.c
 endif
 
-#%.hex: %.elf
-#	$(OBJCOPY) -R .eeprom -R .fuse -R .signature $^ -O ihex $@
+%.hex: %.elf
+	$(OBJCOPY) -R .eeprom -R .fuse -R .signature $^ -O ihex $@
 
 %.eep: %.out
 	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" \

@@ -65,6 +65,8 @@ static int slip_radio_cmd_handler(const uint8_t *data, int len);
 int cmd_handler_cc2420(const uint8_t *data, int len);
 #elif CONTIKI_TARGET_NOOLIBERRY
 int cmd_handler_rf230(const uint8_t *data, int len);
+#elif RADIO_DEVICE_cc1101
+int cmd_handler_cc1101(const uint8_t *data, int len);
 #elif CONTIKI_TARGET_ECONOTAG
 int cmd_handler_mc1322x(const uint8_t *data, int len);
 #else /* Leave CC2420 as default */
@@ -177,10 +179,10 @@ init(void)
 #ifndef BAUD2UBR
 #define BAUD2UBR(baud) baud
 #endif
-  slip_arch_init(BAUD2UBR(115200));
-  process_start(&slip_process, NULL);
-  slip_set_input_callback(slip_input_callback);
-  packet_pos = 0;
+    slip_arch_init(SLIP_BAUD);
+    process_start(&slip_process, NULL);
+    slip_set_input_callback(slip_input_callback);
+    packet_pos = 0;
 }
 /*---------------------------------------------------------------------------*/
 #if !SLIP_RADIO_CONF_NO_PUTCHAR

@@ -51,6 +51,8 @@
 #include "dev/rs232_atmega128rfa1.h"
 #elif defined (__AVR_ATmega644__) || defined (__AVR_ATmega328P__)
 #include "dev/rs232_atmega644.h"
+#elif defined (__AVR_ATmega32U4__)
+#include "dev/rs232_atmega32u4.h"
 #elif defined (__AVR_ATmega8__) || defined (__AVR_ATmega8515__) \
    || defined (__AVR_ATmega16__) || defined (__AVR_ATmega32__)
 #include "dev/rs232_atmega32.h"

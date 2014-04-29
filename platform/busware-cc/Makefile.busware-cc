@@ -1,0 +1,48 @@
+# -*- mode: Makefile -*-
+
+
+# flags used in settings 
+CONTIKI_TARGET_MAIN	= ${CONTIKI_CORE}.o
+
+CONTIKI_TARGET_SOURCEFILES += spi.c  node-id.c rng.c leds-platform.c
+CONTIKI_TARGET_SOURCEFILES += cc1101.c cc1101-arch.c slip-arch.c
+
+
+BUSWAREPLATFORMDIR  = ../busware-cc
+CONTIKI_TARGET_DIRS += $(BUSWAREPLATFORMDIR) $(BUSWAREPLATFORMDIR)/dev $(BUSWAREPLATFORMDIR)/radio
+
+CLEAN += *.elf *.hex symbols.c symbols.h
+
+CONTIKIAVR	    = $(CONTIKI)/cpu/avr
+
+
+#Possible watchdog timeouts depend on mcu. Default is WDTO_2S. -1 Disables the watchdog.
+WATCHDOG_CONF_TIMEOUT = -1
+
+
+CONTIKI_PLAT_DEFS	= -DF_CPU=$(AVR_MCU_SPEED) \
+			  -DMCU_MHZ=$(AVR_MCU_CLOCK) \
+			  -DWATCHDOG_CONF_TIMEOUT=$(WATCHDOG_CONF_TIMEOUT)
+
+ifneq ($(NODE_ID),)
+CONTIKI_PLAT_DEFS   += -DNODE_CONF_ID=$(NODE_ID)	
+endif
+
+NOAVRSIZE = 1
+
+MODULES+=core/net/ip core/net/ipv4 core/net core/net/rpl \
+         core/net/ipv6 core/net/rime core/net/mac core/net/mac/sicslowmac
+
+include $(CONTIKIAVR)/Makefile.avr
+
+login:
+	$(CONTIKI)/tools/stm32w/serialdump -b$(AVRDUDE_BAUD) $(filter-out -P,$(AVRDUDE_PORT))
+
+# a target that gives a user-friendly memory profile, taking into account the RAM
+# that is statically occupied by the stack as defined in cpu/stm32w108/gnu.ld
+SIZE = avr-size
+
+
+%.size: %.elf
+	@$(SIZE) -A $< | egrep "data|bss" | awk '{s+=$$2} END {s=s+$(STACK_SIZE); f=$(RAM_SIZE)-s; printf "[RAM]   used %6d, free %6d\n",s,f;}'
+	@$(SIZE) -A $< | egrep "text|isr_vector" | awk '{s+=$$2} END {f=$(FLASH_SIZE)-s; printf "[Flash] used %6d, free %6d\n",s,f;}'

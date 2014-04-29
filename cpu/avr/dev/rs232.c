@@ -115,7 +115,7 @@
 
 #endif
 
-#elif defined (__AVR_AT90USB1287__)
+#elif defined (__AVR_AT90USB1287__) || defined (__AVR_ATmega32U4__)
 /* Has only UART1, map it to port 0 */
 #ifndef NUMPORTS
 #define NUMPORTS 1

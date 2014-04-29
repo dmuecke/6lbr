@@ -1,10 +1,10 @@
 
 #include "compiler.h"
-#include "delay.h"
+//#include "delay.h"
 
-#include <avr/pgmspace.h>
+//#include <avr/pgmspace.h>
 
-/*-----------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------
 static void
 delay(void)
 {
@@ -13,10 +13,11 @@ delay(void)
     Delay_10ms(1);
   }
 }
+*/
 /*-----------------------------------------------------------------------------------*/
-static char buffer[40];
-static const char hextab[] PROGMEM = 
-  {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+//static char buffer[40];
+//static const char hextab[] PROGMEM = 
+//  {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 /*-----------------------------------------------------------------------------------*/
 static void
 print_buffer(unsigned char len)
@@ -24,8 +25,8 @@ print_buffer(unsigned char len)
   unsigned char i;
 
   for(i = 0; i < len; ++i) {
-    delay();
-    UDR0 = buffer[i];
+//    delay();
+//    UDR0 = buffer[i];
   }
 }
 /*-----------------------------------------------------------------------------------*/

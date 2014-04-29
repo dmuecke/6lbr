@@ -26,7 +26,7 @@
 #ifndef __AVR_ATmega128__
 #define __AVR_ATmega128__
 #endif
-#include <avr/signal.h>
+//#include <avr/signal.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
